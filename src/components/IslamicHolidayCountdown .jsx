@@ -12,6 +12,7 @@ const IslamicHolidayCountdown = () => {
     event.preventDefault();
     updateCountdown();
   };
+
   const updateCountdown = () => {
     const now = new Date();
     const timeRemaining = holidayDate.getTime() - now.getTime();
@@ -19,20 +20,21 @@ const IslamicHolidayCountdown = () => {
     if (timeRemaining > 0) {
       const months = Math.floor((holidayDate.getMonth() - now.getMonth() + 12 * (holidayDate.getFullYear() - now.getFullYear())) % 12);
       const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-      const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
-      const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+      const hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24); // Adjusted hours calculation
+      const minutes = Math.floor((timeRemaining / (1000 * 60)) % 60); // Adjusted minutes calculation
+      const seconds = Math.floor((timeRemaining / 1000) % 60); // Adjusted seconds calculation
   
       setCountdown(`${months} months, ${days} days, ${hours} hours, ${minutes} minutes, and ${seconds} seconds`);
     } else {
       setCountdown('The next Islamic holiday has arrived!');
     }
   };
+
   useEffect(() => {
     updateCountdown();
     const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
-  }, [holidayDate]);
+  }, [holidayDate, updateCountdown]); // Added holidayDate and updateCountdown to the dependency array
 
   return (
     <div
